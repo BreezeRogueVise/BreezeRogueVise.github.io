@@ -77,53 +77,36 @@
     </div>
 
 <script>
-    // ------------------ СПИСОК ФАЙЛОВ ------------------
+    // Карта файлов — ключ = то, что в ?filename=
     const fileMap = {
-        "1":                "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
-        "installer":        "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
-        "premium-txt":      "https://www.mediafire.com/file/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%40TXT_ALIENS_-_1444.txt/file",
-        "txt-aliens":       "https://www.mediafire.com/file/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%40TXT_ALIENS_-_1444.txt/file"
-        // новые файлы добавляй сюда в формате "ключ": "ссылка",
+        "1":          "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
+        "installer":  "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
+        "premium-txt": "https://www.mediafire.com/file/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%40TXT_ALIENS_-_1444.txt/file",
+        "txt-aliens": "https://www.mediafire.com/file/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%40TXT_ALIENS_-_1444.txt/file"
+        // добавляй новые так же: "ключ": "ссылка",
     };
-    // ----------------------------------------------------
 
+    // Читаем параметр
     const params = new URLSearchParams(window.location.search);
     const filename = params.get("filename");
 
-    const infoElement  = document.getElementById("filename-info");
-    const errorElement = document.getElementById("error");
-    const timerDiv     = document.querySelector(".timer");
-
-    let downloadUrl = null;
+    let url = null;
 
     if (filename && fileMap[filename]) {
-        downloadUrl = fileMap[filename];
-        if (infoElement) infoElement.textContent = "Selected: " + filename;
-        if (errorElement) errorElement.style.display = "none";
-    } else {
-        if (errorElement) {
-            errorElement.textContent = "Неизвестный файл. Примеры: ?filename=1 или ?filename=premium-txt";
-            errorElement.style.display = "block";
-        }
-        if (timerDiv) timerDiv.style.display = "none";
-        if (infoElement) infoElement.textContent = "Ошибка";
-        return; // не запускаем таймер
+        url = fileMap[filename];
     }
 
-    // Обратный отсчёт
-    let countdown = 5;
-    const countdownElement = document.getElementById('countdown');
-
-    const interval = setInterval(function() {
-        countdown--;
-        countdownElement.textContent = countdown;
-
-        if (countdown <= 0) {
-            clearInterval(interval);
-            window.open(downloadUrl, '_blank');   // новая вкладка — лучше всего работает с MediaFire
-            // Если хочешь редирект в той же вкладке — замени на: window.location.href = downloadUrl;
-        }
-    }, 1000);
+    if (url) {
+        // Мгновенный редирект в той же вкладке
+        window.location.href = url;
+    } else {
+        // Если параметр неправильный или отсутствует → показываем ошибку
+        document.querySelector(".timer").textContent = "Ошибка: укажите правильный ?filename=";
+        document.querySelector(".info").textContent = "Примеры: ?filename=1  или  ?filename=premium-txt";
+        document.querySelector(".verified").style.display = "none";
+        document.querySelector(".loader").style.display = "none";
+        document.getElementById("error").style.display = "block";
+    }
 </script>
 </body>
 </html>
