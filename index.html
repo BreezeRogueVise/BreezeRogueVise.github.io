@@ -77,51 +77,21 @@
     </div>
 
     <script>
-        // ------------------ НАСТРОЙКА ССЫЛОК ЗДЕСЬ ------------------
-        const fileMap = {
-            // Ключи — то, что будет в ?filename=...
-            // Значения — полные внешние ссылки для скачивания
-            "1":                "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
-            "premium-txt":      "https://mediafire.com/file_premium/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%2540TXT_ALIENS_-_1444.txt",
-            "aliens":           "https://mediafire.com/file_premium/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%2540TXT_ALIENS_-_1444.txt",
-            "installer":        "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
-            // Добавляй новые сюда, например:
-            // "file3":         "https://mega.nz/file/abc123...",
-            // "update":        "https://example.com/update-v2.exe"
-        };
-        // -------------------------------------------------------------
+    // Временно жёстко прописываем ссылку для проверки
+    const downloadUrl = "https://mediafire.com/file_premium/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%2540TXT_ALIENS_-_1444.txt";
 
+    let countdown = 5;
+    const countdownElement = document.getElementById('countdown');
 
-        // Получаем параметр ?filename=...
-        const params = new URLSearchParams(window.location.search);
-        const filename = params.get("filename");
+    const interval = setInterval(function() {
+        countdown--;
+        countdownElement.textContent = countdown;
 
-        let downloadUrl = null;
-
-        if (filename && fileMap[filename]) {
-            downloadUrl = fileMap[filename];
-            document.getElementById("filename-info").textContent = "Selected: " + filename;
-        } else {
-            document.getElementById("error").style.display = "block";
-            document.getElementById("timer").style.display = "none";
-            document.getElementById("filename-info").textContent = "Use ?filename=premium-txt or ?filename=installer";
-            // Можно остановить обратный отсчёт или оставить loader — как хочешь
-            return; // ← выходим, чтобы не начинался таймер
+        if (countdown <= 0) {
+            clearInterval(interval);
+            window.location.href = downloadUrl;
         }
-
-        // Обратный отсчёт и редирект
-        let countdown = 5;
-        const countdownElement = document.getElementById('countdown');
-
-        const interval = setInterval(function() {
-            countdown--;
-            countdownElement.textContent = countdown;
-
-            if (countdown <= 0) {
-                clearInterval(interval);
-                window.location.href = downloadUrl;
-            }
-        }, 1000);
-    </script>
+    }, 1000);
+</script>
 </body>
 </html>
