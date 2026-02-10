@@ -77,16 +77,14 @@
     </div>
 
 <script>
-    // Карта файлов — ключ = то, что в ?filename=
+    // Карта файлов — ключ = значение после ?filename=
     const fileMap = {
         "1":          "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
         "installer":  "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
         "premium-txt": "https://www.mediafire.com/file/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%40TXT_ALIENS_-_1444.txt/file",
         "txt-aliens": "https://www.mediafire.com/file/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%40TXT_ALIENS_-_1444.txt/file"
-        // добавляй новые так же: "ключ": "ссылка",
     };
 
-    // Читаем параметр
     const params = new URLSearchParams(window.location.search);
     const filename = params.get("filename");
 
@@ -100,12 +98,19 @@
         // Мгновенный редирект в той же вкладке
         window.location.href = url;
     } else {
-        // Если параметр неправильный или отсутствует → показываем ошибку
-        document.querySelector(".timer").textContent = "Ошибка: укажите правильный ?filename=";
-        document.querySelector(".info").textContent = "Примеры: ?filename=1  или  ?filename=premium-txt";
-        document.querySelector(".verified").style.display = "none";
-        document.querySelector(".loader").style.display = "none";
-        document.getElementById("error").style.display = "block";
+        // Показываем ошибку, если параметр неверный / отсутствует
+        document.body.innerHTML = `
+            <div style="text-align:center; padding:50px; color:#d32f2f; font-family:Arial;">
+                <h1>Ошибка</h1>
+                <p>Не указан файл или неизвестный параметр.</p>
+                <p>Примеры правильных ссылок:</p>
+                <ul style="display:inline-block; text-align:left;">
+                    <li>?filename=1</li>
+                    <li>?filename=installer</li>
+                    <li>?filename=premium-txt</li>
+                </ul>
+            </div>
+        `;
     }
 </script>
 </body>
