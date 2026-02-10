@@ -76,12 +76,50 @@
         <div class="error" id="error" style="display:none;">File not specified or unknown</div>
     </div>
 
-    <script>
-    // Временно жёстко прописываем ссылку для проверки
-    const downloadUrl = "https://mediafire.com/file_premium/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%2540TXT_ALIENS_-_1444.txt";
+<script>
+    // ------------------ НАСТРОЙКА ФАЙЛОВ ЗДЕСЬ ------------------
+    const fileMap = {
+        "premium-txt":      "https://www.mediafire.com/file/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%40TXT_ALIENS_-_1444.txt/file",
+        "installer":        "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
+        "1":                "https://github.com/charter-fairyu10/turn/releases/download/ex/Installer.zip",
+        "txt-aliens":       "https://www.mediafire.com/file/7grjnw3i1n1x71a/FOLLOW_TELEGRAM_%40TXT_ALIENS_-_1444.txt/file"
+        // Добавляй новые файлы сюда в формате:
+        // "имя-в-url": "полная-ссылка-для-скачивания",
+    };
+    // ------------------------------------------------------------
 
+    // Читаем параметр из URL
+    const params = new URLSearchParams(window.location.search);
+    const filename = params.get("filename");   // или params.get("file") если хочешь ?file=...
+
+    const infoElement    = document.getElementById("filename-info");
+    const errorElement   = document.getElementById("error");
+    const timerElement   = document.querySelector(".timer");
+
+    let downloadUrl = null;
+
+    if (filename && fileMap[filename]) {
+        downloadUrl = fileMap[filename];
+        if (infoElement) {
+            infoElement.textContent = "Selected: " + filename;
+        }
+        errorElement.style.display = "none";
+    } else {
+        errorElement.textContent = "File not specified or unknown. Use ?filename=premium-txt";
+        errorElement.style.display = "block";
+        if (timerElement) timerElement.style.display = "none";
+        if (infoElement) infoElement.textContent = "Ошибка выбора файла";
+        return; // ← останавливаем таймер и редирект
+    }
+
+    // Обратный отсчёт и запуск скачивания
     let countdown = 5;
     const countdownElement = document.getElementById('countdown');
+
+    if (!countdownElement) {
+        console.error("Элемент countdown не найден");
+        return;
+    }
 
     const interval = setInterval(function() {
         countdown--;
@@ -89,7 +127,9 @@
 
         if (countdown <= 0) {
             clearInterval(interval);
-            window.location.href = downloadUrl;
+            // Лучший способ для MediaFire — открыть в новой вкладке
+            window.open(downloadUrl, '_blank');
+            // Альтернатива: window.location.href = downloadUrl; (но часто блокируется)
         }
     }, 1000);
 </script>
